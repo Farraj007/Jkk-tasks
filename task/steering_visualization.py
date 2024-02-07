@@ -30,8 +30,8 @@ class MinimalSubscriber(Node):
         self.screen = pygame.display.set_mode([self.screen_width, self.screen_height])
         pygame.display.set_caption("ROS2 Data Visualization")
         self.font = pygame.font.SysFont(None, 36)
-        self.steering_wheel_image = pygame.image.load('src/task/task/steering_wheel2.svg').convert_alpha()
-        self.steering_wheel_image2 = pygame.image.load('src/task/task/steering_wheel.svg').convert_alpha()
+        self.steering_wheel_image = pygame.image.load('task/task/steering_wheel.svg').convert_alpha()
+        self.steering_wheel_image2 = pygame.image.load('task/task/steering_wheel2.svg').convert_alpha()
         self.steering_wheel_image.set_alpha(180)
         
     def init_subscriptions(self):
