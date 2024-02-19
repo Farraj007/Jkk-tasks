@@ -1,0 +1,41 @@
+running egg_info
+creating build/task/task.egg-info
+writing build/task/task.egg-info/PKG-INFO
+writing dependency_links to build/task/task.egg-info/dependency_links.txt
+writing entry points to build/task/task.egg-info/entry_points.txt
+writing requirements to build/task/task.egg-info/requires.txt
+writing top-level names to build/task/task.egg-info/top_level.txt
+writing manifest file 'build/task/task.egg-info/SOURCES.txt'
+reading manifest file 'build/task/task.egg-info/SOURCES.txt'
+adding license file 'LICENSE'
+writing manifest file 'build/task/task.egg-info/SOURCES.txt'
+running build
+running build_py
+creating /home/farraj/ros2_ws/src/task/build/task/build
+creating /home/farraj/ros2_ws/src/task/build/task/build/lib
+creating /home/farraj/ros2_ws/src/task/build/task/build/lib/task
+copying task/__init__.py -> /home/farraj/ros2_ws/src/task/build/task/build/lib/task
+copying task/steering_visualization.py -> /home/farraj/ros2_ws/src/task/build/task/build/lib/task
+running install
+/usr/lib/python3/dist-packages/setuptools/command/install.py:34: SetuptoolsDeprecationWarning: setup.py install is deprecated. Use build and pip and other standards-based tools.
+  warnings.warn(
+running install_lib
+creating /home/farraj/ros2_ws/src/task/install/task/lib/python3.10/site-packages/task
+copying /home/farraj/ros2_ws/src/task/build/task/build/lib/task/__init__.py -> /home/farraj/ros2_ws/src/task/install/task/lib/python3.10/site-packages/task
+copying /home/farraj/ros2_ws/src/task/build/task/build/lib/task/steering_visualization.py -> /home/farraj/ros2_ws/src/task/install/task/lib/python3.10/site-packages/task
+byte-compiling /home/farraj/ros2_ws/src/task/install/task/lib/python3.10/site-packages/task/__init__.py to __init__.cpython-310.pyc
+byte-compiling /home/farraj/ros2_ws/src/task/install/task/lib/python3.10/site-packages/task/steering_visualization.py to steering_visualization.cpython-310.pyc
+running install_data
+creating /home/farraj/ros2_ws/src/task/install/task/share/ament_index
+creating /home/farraj/ros2_ws/src/task/install/task/share/ament_index/resource_index
+creating /home/farraj/ros2_ws/src/task/install/task/share/ament_index/resource_index/packages
+copying resource/task -> /home/farraj/ros2_ws/src/task/install/task/share/ament_index/resource_index/packages
+copying package.xml -> /home/farraj/ros2_ws/src/task/install/task/share/task
+warning: install_data: setup script did not provide a directory for 'task/steering_visualization.py' -- installing right in '/home/farraj/ros2_ws/src/task/install/task'
+
+copying task/steering_visualization.py -> /home/farraj/ros2_ws/src/task/install/task
+running install_egg_info
+Copying build/task/task.egg-info to /home/farraj/ros2_ws/src/task/install/task/lib/python3.10/site-packages/task-0.0.0-py3.10.egg-info
+running install_scripts
+Installing task script to /home/farraj/ros2_ws/src/task/install/task/lib/task
+writing list of installed files to '/home/farraj/ros2_ws/src/task/build/task/install.log'

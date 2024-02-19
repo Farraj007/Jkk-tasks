@@ -1,0 +1,4 @@
+/usr/lib/python3/dist-packages/setuptools/command/install.py:34: SetuptoolsDeprecationWarning: setup.py install is deprecated. Use build and pip and other standards-based tools.
+  warnings.warn(
+warning: install_data: setup script did not provide a directory for 'task/steering_visualization.py' -- installing right in '/home/farraj/ros2_ws/src/task/install/task'
+

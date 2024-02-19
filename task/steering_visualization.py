@@ -6,7 +6,7 @@ from pacmod3_msgs.msg import SteeringCmd
 from pacmod3_msgs.msg import VehicleSpeedRpt, SteeringAuxRpt, SteeringCmd
 import pygame
 import math
-import inspect
+import numpy as np
 
 class MinimalSubscriber(Node):
     def __init__(self):
@@ -22,17 +22,13 @@ class MinimalSubscriber(Node):
         self.last_current_speed = None
         self.last_steering_angle = None
         self.last_current_steering_angle=None
-
-        self.knob_center=None
         
     def init_pygame(self):
         pygame.init()
         self.screen = pygame.display.set_mode([self.screen_width, self.screen_height])
         pygame.display.set_caption("ROS2 Data Visualization")
         self.font = pygame.font.SysFont(None, 36)
-        self.steering_wheel_image = pygame.image.load('task/task/steering_wheel.svg').convert_alpha()
-        self.steering_wheel_image2 = pygame.image.load('task/task/steering_wheel2.svg').convert_alpha()
-        self.steering_wheel_image.set_alpha(180)
+        # self.steering_wheel_image.set_alpha(180)
         
     def init_subscriptions(self):
         self.subscription = self.create_subscription(Bool, '/lexus3/pacmod/enabled', self.listener_callback, 10)
@@ -57,52 +53,82 @@ class MinimalSubscriber(Node):
             self.screen.blit(text, (150, 50))
             
         
-        #printing a photo
         if self.last_current_steering_angle is not None:
-            rotated_steering_wheel = pygame.transform.rotate(self.steering_wheel_image, self.last_current_steering_angle)
-            self.screen.blit(rotated_steering_wheel, ((400 - rotated_steering_wheel.get_width()) // 2, (500 - rotated_steering_wheel.get_height()) // 2))
-
-            text = self.font.render('Current angle: {:.2f}°'.format(self.last_current_steering_angle), True, (255, 0, 0))
-            self.screen.blit(text, (325, 200))
+            self.draw_steering_wheel((self.screen_width // 2, self.screen_height // 2), self.last_current_steering_angle)
             
         if self.last_steering_angle is not None:
-            rotated_steering_wheel = pygame.transform.rotate(self.steering_wheel_image2, self.last_steering_angle)
-            self.screen.blit(rotated_steering_wheel, ((400 - rotated_steering_wheel.get_width()) // 2, (500 - rotated_steering_wheel.get_height()) // 2))
+            self.draw_ref_steering_wheel((self.screen_width // 2, self.screen_height // 2), self.last_steering_angle)
 
-            text = self.font.render('Ref angle: {:.2f}°'.format(self.last_steering_angle), True, (0, 0, 255))
-            self.screen.blit(text, (325, 220))
+        pygame.display.flip()  
 
-        pygame.display.flip()
-        #drawing
-        # if self.last_current_steering_angle is not None:
-        #     self.draw_steering_wheel((self.screen_width // 2, self.screen_height // 2), self.last_current_steering_angle)
-            
-        # if self.last_steering_angle is not None:
-        #     self.draw_ref_knob((self.screen_width // 2, self.screen_height // 2),self.last_steering_angle)
+    def draw_steering_wheel(self, position, angle):
+        wheel_radius = 100
+        inner_wheel_radius = 30
+        inner_wheel_color = (255, 255, 255)
+        rim_color = (255, 255, 255)
+        line_color = (255, 0, 0)
 
-        # pygame.display.flip()  
 
-    # def draw_steering_wheel(self, position, angle):
-    
-    #     wheel_radius = 100
-    #     knob_radius = 20
+        vertical_0_start = self.rotate_point(position, angle, -inner_wheel_radius)
+        vertical_0_end = self.rotate_point(position, angle, -wheel_radius)
+        horizontal_0_start = self.rotate_point(position, angle + 90, inner_wheel_radius)  # Adjust angle for horizontal lines
+        horizontal_0_end = self.rotate_point(position, angle + 90, wheel_radius)
+        horizontal_0a_start = self.rotate_point(position, angle - 90, inner_wheel_radius)
+        horizontal_0a_end = self.rotate_point(position, angle - 90, wheel_radius)
+        horizontal_1_start = self.rotate_point(position, angle + 90, wheel_radius)
+        horizontal_1_end = self.rotate_point(position, angle + 90, wheel_radius)
+        horizontal_1a_start = self.rotate_point(position, angle - 90, wheel_radius)
+        horizontal_1a_end = self.rotate_point(position, angle - 90, wheel_radius)
+
+        # Draw elements using calculated coordinates
+        pygame.draw.circle(self.screen, inner_wheel_color, position, inner_wheel_radius, 2)
+        pygame.draw.circle(self.screen, rim_color, position, wheel_radius, 2)
+        pygame.draw.line(self.screen, line_color, vertical_0_start, vertical_0_end)
+        pygame.draw.line(self.screen, line_color, horizontal_0_start, horizontal_0_end)
+        pygame.draw.line(self.screen, line_color, horizontal_0a_start, horizontal_0a_end)
+        pygame.draw.line(self.screen, line_color, horizontal_1_start, horizontal_1_end)
+        pygame.draw.line(self.screen, line_color, horizontal_1a_start, horizontal_1a_end)
+
+        text = self.font.render('Current angle: {:.2f}°'.format(angle), True, (255, 0, 0))
+        self.screen.blit(text, (325, 300))
+
+
+    def draw_ref_steering_wheel(self, position, angle):
+        wheel_radius = 100
+        inner_wheel_radius = 30
+        inner_wheel_color = (255,255,255)
+        rim_color = (255, 255, 255)
+        line_color = (0, 0, 255)
+
+        vertical_0_start = self.rotate_point(position, angle, -inner_wheel_radius)
+        vertical_0_end = self.rotate_point(position, angle, -wheel_radius)
+        horizontal_0_start = self.rotate_point(position, angle + 90, inner_wheel_radius)  # Adjust angle for horizontal lines
+        horizontal_0_end = self.rotate_point(position, angle + 90, wheel_radius)
+        horizontal_0a_start = self.rotate_point(position, angle - 90, inner_wheel_radius)
+        horizontal_0a_end = self.rotate_point(position, angle - 90, wheel_radius)
+        horizontal_1_start = self.rotate_point(position, angle + 90, wheel_radius)
+        horizontal_1_end = self.rotate_point(position, angle + 90, wheel_radius)
+        horizontal_1a_start = self.rotate_point(position, angle - 90, wheel_radius)
+        horizontal_1a_end = self.rotate_point(position, angle - 90, wheel_radius)
+
+        # Draw elements using calculated coordinates
+        pygame.draw.circle(self.screen, inner_wheel_color, position, inner_wheel_radius, 2)
+        pygame.draw.circle(self.screen, rim_color, position, wheel_radius, 2)
+        pygame.draw.line(self.screen, line_color, vertical_0_start, vertical_0_end)
+        pygame.draw.line(self.screen, line_color, horizontal_0_start, horizontal_0_end)
+        pygame.draw.line(self.screen, line_color, horizontal_0a_start, horizontal_0a_end)
+        pygame.draw.line(self.screen, line_color, horizontal_1_start, horizontal_1_end)
+        pygame.draw.line(self.screen, line_color, horizontal_1a_start, horizontal_1a_end)
         
-    #     pygame.draw.circle(self.screen, (255, 255, 255), position, wheel_radius, 2)
-    #     knob_center = (position[0] + int(math.cos(math.radians(angle)) * wheel_radius),
-    #                    position[1] - int(math.sin(math.radians(angle)) * wheel_radius))
-    #     pygame.draw.circle(self.screen, (255, 0, 0), knob_center, knob_radius)
-    #     text = self.font.render('Current angle: {:.2f}°'.format(angle), True, (255,0,0))
-    #     self.screen.blit(text, (325, 300))
+        text = self.font.render('Ref angle: {:.2f}°'.format(angle), True, (0, 0, 255))
+        self.screen.blit(text, (325, 340))
 
-    # def draw_ref_knob(self,position,angle):
-    #     wheel_radius = 100
-    #     knob_radius = 20
-
-    #     knob_center = (position[0] + int(math.cos(math.radians(angle)) * wheel_radius),
-    #                    position[1] - int(math.sin(math.radians(angle)) * wheel_radius))
-    #     pygame.draw.circle(self.screen, (0, 0, 255), knob_center, knob_radius)
-    #     text = self.font.render('Ref angle: {:.2f}°'.format(angle), True, (0,0,255))
-    #     self.screen.blit(text, (325, 320))
+    # Helper function to rotate a point around a given center
+    def rotate_point(self,center, angle, radius):
+        angle_radians = math.radians(angle)
+        x = center[0] + radius * math.cos(angle_radians)
+        y = center[1] - radius * math.sin(angle_radians)
+        return (int(x), int(y))
 
     def listener_callback(self, msg):
         self.last_driving_status = 'You Are Driving' if msg.data else 'In Car Driver'
@@ -123,7 +149,7 @@ class MinimalSubscriber(Node):
     def listener_callback4(self, msg):
         self.last_steering_angle = math.degrees(msg.rotation_rate)
         self.update_display()
-        pass
+        
 
 def main(args=None):
     rclpy.init(args=args)
@@ -134,4 +160,5 @@ def main(args=None):
     pygame.quit()
 
 if __name__ == '__main__':
+    
     main()
