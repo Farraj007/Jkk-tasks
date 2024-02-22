@@ -62,6 +62,7 @@ class MinimalSubscriber(Node):
         self.subscription5 = self.create_subscription(SteeringCmd, '/lexus3/pacmod/steering_cmd', self.listener_callback5, 1)
 
     def update_display(self):
+        
         if self.last_driving_status is not None:
             self.label_status.setText(self.last_driving_status)
 
