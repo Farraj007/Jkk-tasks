@@ -47,15 +47,15 @@ class MinimalSubscriber(Node):
         self.screen.fill((0, 0, 0))
 
         if self.last_driving_status is not None:
-            text = self.font.render(self.last_driving_status, True, (0, 255, 0) if self.last_driving_status.startswith('You') else (255, 0, 0))
+            text = self.font.render(self.last_driving_status, True, (107, 195, 53) if self.last_driving_status.startswith('You') else (220, 38, 38))
             self.screen.blit(text, (200, 20))
 
         if self.last_reference_speed is not None:
-            text = self.font.render('Reference Speed: {:.2f}Km/h'.format(self.last_reference_speed), True, (0, 0, 255))
+            text = self.font.render('Reference Speed: {:.2f}Km/h'.format(self.last_reference_speed), True, (107, 195, 53))
             self.screen.blit(text, (150, 70))
 
         if self.last_current_speed is not None:
-            text = self.font.render('Current Speed: {:.2f}Km/h'.format(self.last_current_speed), True, (255, 0, 0))
+            text = self.font.render('Current Speed: {:.2f}Km/h'.format(self.last_current_speed), True, (220, 38, 38))
             self.screen.blit(text, (150, 50))
             
         
@@ -133,11 +133,12 @@ class MinimalSubscriber(Node):
         self.screen.blit(text, (325, 340))
 
     def draw_bar(self,level):
-        bar_x = 20
+        bar_x = 50
         bar_y = 100
         bar_width = 50
         bar_height = 200
         bar_color = (255, 255, 255)  # White background
+        zero_color=(184,184,184)
         acc_color = (0, 255, 0)  # Green for acceleration
         braking_color = (255, 0, 0)  # Red for braking
 
@@ -151,11 +152,23 @@ class MinimalSubscriber(Node):
         bar_top = bar_y + half_bar_height - (display_percentage / 200 * bar_height)
 
         pygame.draw.rect(self.screen, bar_color, (bar_x, bar_y, bar_width, bar_height))
+        pygame.draw.line(self.screen,zero_color,(bar_x*0.6,bar_y+bar_height//2),(bar_x*2.3,bar_y+bar_height//2),2)
+        
+        zero_point = self.font.render('0', True, zero_color)
+        self.screen.blit(zero_point, (bar_x*1.7+bar_width, 190))
 
         inner_bar_height = display_percentage / 100 * bar_height
+        
         pygame.draw.rect(self.screen, color, (bar_x, bar_top, bar_width, inner_bar_height))
+        
+        full_text=self.font.render('1', True, acc_color)
+        self.screen.blit(full_text, (bar_x+bar_width//2-10, bar_y*1.2-bar_x))
+        
+        full_brake_text=self.font.render('-1', True, braking_color)
+        self.screen.blit(full_brake_text, (bar_x+bar_width//2-10, bar_y*1.1+bar_height))
+
         text = self.font.render('Joystick:{:.2f}%'.format(throttle_percentage), True, acc_color)
-        self.screen.blit(text, (20, 340))
+        self.screen.blit(text, (bar_x//2, bar_y*1.35+bar_height))
 
     def rotate_point(self,center, angle, radius):
         angle_radians = math.radians(angle)
