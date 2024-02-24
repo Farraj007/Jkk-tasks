@@ -149,7 +149,8 @@ class MinimalSubscriber(Node):
         display_percentage = min(100, abs(throttle_percentage))
 
         half_bar_height = bar_height // 2
-        bar_top = bar_y + half_bar_height - (display_percentage / 200 * bar_height)
+        bar_top = bar_y + half_bar_height - (display_percentage / 100 * bar_height)
+        bar_bottom = bar_y + half_bar_height - (-display_percentage / 100 * bar_height)
 
         pygame.draw.rect(self.screen, bar_color, (bar_x, bar_y, bar_width, bar_height))
         pygame.draw.line(self.screen,zero_color,(bar_x*0.6,bar_y+bar_height//2),(bar_x*2.3,bar_y+bar_height//2),2)
@@ -159,7 +160,7 @@ class MinimalSubscriber(Node):
 
         inner_bar_height = display_percentage / 100 * bar_height
         
-        pygame.draw.rect(self.screen, color, (bar_x, bar_top, bar_width, inner_bar_height))
+        pygame.draw.rect(self.screen, color, (bar_x, bar_top, bar_width, inner_bar_height)) if throttle_percentage>=0 else pygame.draw.rect(self.screen, color, (bar_x, bar_bottom, bar_width, inner_bar_height))
         
         full_text=self.font.render('1', True, acc_color)
         self.screen.blit(full_text, (bar_x+bar_width//2-10, bar_y*1.2-bar_x))
