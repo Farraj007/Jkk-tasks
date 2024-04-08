@@ -1,3 +1,0 @@
-[console_scripts]
-task = task.steering_visualization:main
-
